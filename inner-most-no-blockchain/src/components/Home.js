@@ -16,7 +16,7 @@ class Home extends React.Component {
 
   handleSubmit = () => {
     console.log("bob", this.state.username);
-    fetch(`${process.env.TWITTER_URL}/${this.state.username}.json?count=2`, {
+    fetch(`${process.env.TWITTER_URL}/${this.state.username}.json?count=10`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${process.env.TWITTER_API_KEY}`
@@ -24,15 +24,17 @@ class Home extends React.Component {
     })
       .then(resp => resp.json())
       .then(tweets => {
+        let userTweets = [];
+        tweets.forEach(tweet => userTweets.push(tweet.text));
         this.setState({
-          tweets: tweets
+          tweets: userTweets
         });
-        tweets.forEach(tweet => this.checkEmotion(tweet));
+        userTweets.forEach(tweet => this.checkEmotion(tweet));
       });
   };
 
   checkEmotion = tweet => {
-    var unirest = require("unirest");
+    let unirest = require("unirest");
     unirest
       .post(`${process.env.EMOTION_URL}`)
       .header("X-RapidAPI-Host", "twinword-emotion-analysis-v1.p.rapidapi.com")
@@ -46,25 +48,26 @@ class Home extends React.Component {
   };
 
   render() {
+    console.log(this.state);
     return (
-      <Container textAlign="center" id="twitter-form">
+      <Container textAlign="center" id="twitter-form" text>
         <Header as="h2" icon textAlign="center" inverted>
           <Header.Content id="logo">inner most</Header.Content>
           <Icon name="user" inverted />
         </Header>
         <Form onSubmit={this.handleSubmit}>
           <Form.Input
-            disabled={!this.props.signedIn.isSignedIn}
             id="twitter-input"
             value={this.state.username}
             onChange={this.handleChange}
             placeholder="type your twitter username"
-            style={{ maxWidth: "200px" }}
+            style={{ maxWidth: "500px" }}
           />
           <Button inverted> Submit </Button>
           {this.state.emotions.length === this.state.tweets.length &&
           this.state.emotions.length > 0 ? (
             <UserChart
+              changeGradient={this.props.changeGradient}
               emotions={this.state.emotions}
               tweets={this.state.tweets}
             />

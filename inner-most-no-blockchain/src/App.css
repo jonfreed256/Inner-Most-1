@@ -1,0 +1,18 @@
+#pie-chart {
+  margin-top: 2rem;
+}
+
+#twitter-input {
+  text-align: center;
+}
+
+#twitter-form {
+  position: relative !important;
+  top: 10vh !important;
+}
+
+#gradient {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+}
